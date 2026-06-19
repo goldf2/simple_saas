@@ -2,6 +2,12 @@ import { createServiceRoleClient } from "@/utils/supabase/service-role";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
+const getCreemApiBaseUrl = () => {
+  const baseUrl = process.env.CREEM_API_URL || "https://test-api.creem.io";
+
+  return baseUrl.replace(/\/+$/, "").replace(/\/v1$/, "");
+};
+
 export async function GET(request: Request) {
   try {
     // Get the user from the session
@@ -37,7 +43,7 @@ export async function GET(request: Request) {
 
     // Call Creem API to get the customer portal link
     const response = await fetch(
-      `${process.env.CREEM_API_URL}/customers/billing`,
+      `${getCreemApiBaseUrl()}/v1/customers/billing`,
       {
         method: "POST",
         headers: {

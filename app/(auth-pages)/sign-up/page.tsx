@@ -8,6 +8,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 export default async function SignUp(props: {
   searchParams: Promise<Message>;
@@ -17,7 +18,8 @@ export default async function SignUp(props: {
   const signUpWithGoogle = async () => {
     "use server";
     const supabase = await createClient();
-    const origin = process.env.BASE_URL;
+    const origin =
+      process.env.BASE_URL ?? (await headers()).get("origin") ?? "http://localhost:3000";
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",

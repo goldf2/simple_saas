@@ -19,7 +19,7 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -30,9 +30,17 @@ export const signUpAction = async (formData: FormData) => {
   if (error) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect("success", "/dashboard", "Thanks for signing up!");
   }
+
+  if (!data.session) {
+    return encodedRedirect(
+      "success",
+      "/sign-in",
+      "Thanks for signing up! Please check your email to confirm your account."
+    );
+  }
+
+  return redirect("/dashboard");
 };
 
 export const signInAction = async (formData: FormData) => {
@@ -128,4 +136,3 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
-
